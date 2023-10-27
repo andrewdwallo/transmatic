@@ -23,6 +23,17 @@ php artisan transmatic:install
 
 ## Preparing Your Application
 
+### Configuring AWS Translate (Default Service)
+
+The package leverages AWS Translate by default. Make sure you've read the [AWS Service Provider for Laravel](https://github.com/aws/aws-sdk-php-laravel) package's documentation and have configured the following environment variables:
+
+```dotenv
+AWS_ACCESS_KEY_ID=your-access-key-id
+AWS_SECRET_ACCESS_KEY=your-secret-access-key
+AWS_REGION=your-region  # default is us-east-1
+```
+These are essential for the AWS SDK to authenticate and interact with AWS services. Once these are set, you don't need to do anything else for AWS Translate to work.
+
 ### Configuring Your Translation Service
 
 Transmatic is designed to be flexible for any translation service you prefer. By default, we leverage AWS Translate, but you can easily swap this out for any other service. To do so, you'll need to create a new class that implements the `Wallo\Transmatic\Contracts\Translator` contract.
