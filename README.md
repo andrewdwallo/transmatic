@@ -96,7 +96,7 @@ Batch processing is the default behavior for Transmatic. The relevant options in
 ],
 ```
 
-For more information, you may refer to the 'config/transmatic.php' file.
+For more information, you may refer to the `config/transmatic.php` file.
 
 ## Usage
 
