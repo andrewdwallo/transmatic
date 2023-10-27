@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Wallo\Transmatic\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class TransmaticCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'transmatic';
 
     public $description = 'My command';
 
