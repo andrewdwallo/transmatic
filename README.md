@@ -15,7 +15,7 @@ Start by installing the package via Composer:
 composer require andrewdwallo/transmatic
 ```
 
-After the package is installed, run the following command to scaffold the necessary assets and configurations:
+After the package is installed, run the following command:
 
 ```bash
 php artisan transmatic:install
@@ -96,7 +96,7 @@ Batch processing is the default behavior for Transmatic. The relevant options in
 ],
 ```
 
-For more information, you may refer to the 'config/transmatic.php' file.
+For more information, you may refer to the `config/transmatic.php` file.
 
 ## Usage
 
