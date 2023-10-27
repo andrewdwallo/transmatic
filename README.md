@@ -1,11 +1,12 @@
-# Transmatic: Automated Real-Time Text Translations for Laravel
+# Transmatic
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/andrewdwallo/transmatic.svg?style=flat-square)](https://packagist.org/packages/andrewdwallo/transmatic)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/andrewdwallo/transmatic/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/andrewdwallo/transmatic/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/andrewdwallo/transmatic/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/andrewdwallo/transmatic/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/andrewdwallo/transmatic.svg?style=flat-square)](https://packagist.org/packages/andrewdwallo/transmatic)
 
-Transmatic is your one-stop solution for integrating real-time text translations in Laravel applications. Whether you're building a complex SaaS, ERP, or Accounting software, Transmatic offers a range of customization options to fit your needs. By default, we leverage [AWS Translate](https://aws.amazon.com/translate/), but the package is designed to be flexible for any translation service you prefer.
+Transmatic is a Laravel package for real-time machine translation, enabling instant and dynamic translation across your entire application. Suitable for projects ranging from simple websites to complex SaaS platforms and more, Transmatic offers customization and flexibility. Using advanced machine translation, it makes your app globally accessible. While [AWS Translate](https://aws.amazon.com/translate/) is the default engine, the package can easily integrate with other translation services.
+
 
 ## Installation
 
