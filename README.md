@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/andrewdwallo/transmatic/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/andrewdwallo/transmatic/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/andrewdwallo/transmatic.svg?style=flat-square)](https://packagist.org/packages/andrewdwallo/transmatic)
 
-Transmatic is your one-stop solution for integrating real-time text translations in Laravel applications. Whether you're building a complex SaaS, ERP, or Accounting software, Transmatic offers a range of customization options to fit your needs. By default, we leverage AWS Translate, but the package is designed to be flexible for any translation service you prefer.
+Transmatic is your one-stop solution for integrating real-time text translations in Laravel applications. Whether you're building a complex SaaS, ERP, or Accounting software, Transmatic offers a range of customization options to fit your needs. By default, we leverage [AWS Translate](https://aws.amazon.com/translate/), but the package is designed to be flexible for any translation service you prefer.
 
 ## Installation
 
@@ -25,7 +25,7 @@ php artisan transmatic:install
 
 ### Configuring AWS Translate (Default Service)
 
-The package leverages AWS Translate by default. Make sure you've read the [AWS Service Provider for Laravel](https://github.com/aws/aws-sdk-php-laravel) package's documentation and have configured the following environment variables:
+The package leverages [AWS Translate](https://aws.amazon.com/translate/) by default. Make sure you've read the [AWS Service Provider for Laravel](https://github.com/aws/aws-sdk-php-laravel) package's documentation and have configured the following environment variables:
 
 ```dotenv
 AWS_ACCESS_KEY_ID=your-access-key-id
@@ -55,9 +55,7 @@ class YourTranslator implements Translator
 Once you've created your translator, you'll need to update the `translator` key in the `transmatic.php` config file to point to your new class.
 
 ```php
-return [
-    'translator' => Your\Namespace\YourTranslator::class,
-];
+'translator' => Your\Namespace\YourTranslator::class,
 ```
 
 ### Configuration Options
