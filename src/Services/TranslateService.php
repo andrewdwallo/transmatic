@@ -2,7 +2,9 @@
 
 namespace Wallo\Transmatic\Services;
 
+use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 use Wallo\Transmatic\Contracts\TranslationHandler;
 use Wallo\Transmatic\Contracts\Translator;
@@ -29,9 +31,6 @@ class TranslateService
         $this->translator = $translator;
     }
 
-    /**
-     * @throws Throwable
-     */
     public function getCachedTranslation(string $text, string $to): string
     {
         $this->updateEnglishTranslation($text);
@@ -61,9 +60,6 @@ class TranslateService
         }
     }
 
-    /**
-     * @throws Throwable
-     */
     private function handleStorage(string $text, string $to): string
     {
         $translations = $this->translationHandler->retrieve($to);
@@ -81,9 +77,6 @@ class TranslateService
         return $translations[$text] ?? $text;
     }
 
-    /**
-     * @throws Throwable
-     */
     private function generateAllTranslationsForLocale(string $to): void
     {
         $englishTranslations = $this->translationHandler->retrieve($this->sourceLocale);
@@ -102,11 +95,25 @@ class TranslateService
 
         $translationHandler = $this->translationHandler;
 
-        Bus::batch($jobs)
-            ->allowFailures()
-            ->finally(function () use ($translationHandler, $to) {
-                $translationHandler->setBatchFinished($to);
-            })
-            ->dispatch();
+        try {
+            Bus::batch($jobs)
+                ->allowFailures()
+                ->catch(function (Batch $batch, Throwable $e) use ($to) {
+                    Log::error('Translation batch failed:', [
+                        'batchId' => $batch->id,
+                        'locale' => $to,
+                        'exception' => $e->getMessage(),
+                    ]);
+                })
+                ->finally(function () use ($translationHandler, $to) {
+                    $translationHandler->setBatchFinished($to);
+                })
+                ->dispatch();
+        } catch (Throwable $e) {
+            Log::error('Failed to dispatch translation batch:', [
+                'locale' => $to,
+                'exception' => $e->getMessage(),
+            ]);
+        }
     }
 }

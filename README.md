@@ -1,60 +1,183 @@
-# Automate and streamline real-time text translations in your Laravel applications
+# Transmatic: Automated Real-Time Text Translations for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/andrewdwallo/transmatic.svg?style=flat-square)](https://packagist.org/packages/andrewdwallo/transmatic)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/andrewdwallo/transmatic/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/andrewdwallo/transmatic/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/andrewdwallo/transmatic/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/andrewdwallo/transmatic/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/andrewdwallo/transmatic.svg?style=flat-square)](https://packagist.org/packages/andrewdwallo/transmatic)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/transmatic.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/transmatic)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+Transmatic is your one-stop solution for integrating real-time text translations in Laravel applications. Whether you're building a complex SaaS, ERP, or Accounting software, Transmatic offers a range of customization options to fit your needs. By default, we leverage AWS Translate, but the package is designed to be flexible for any translation service you prefer.
 
 ## Installation
 
-You can install the package via composer:
+Start by installing the package via Composer:
 
 ```bash
 composer require andrewdwallo/transmatic
 ```
 
-You can publish and run the migrations with:
+After the package is installed, run the following command to scaffold the necessary assets and configurations:
 
 ```bash
-php artisan vendor:publish --tag="transmatic-migrations"
-php artisan migrate
+php artisan transmatic:install
 ```
 
-You can publish the config file with:
+## Preparing Your Application
 
-```bash
-php artisan vendor:publish --tag="transmatic-config"
+### Configuring Your Translation Service
+
+Transmatic is designed to be flexible for any translation service you prefer. By default, we leverage AWS Translate, but you can easily swap this out for any other service. To do so, you'll need to create a new class that implements the `Wallo\Transmatic\Contracts\Translator` contract.
+
+```php
+namespace Your\Namespace;
+
+use Wallo\Transmatic\Contracts\Translator;
+
+class YourTranslator implements Translator
+{
+    public function translate(string $text, string $from, string $to): string
+    {
+        // Your translation logic here
+    }
+}
 ```
 
-This is the contents of the published config file:
+Once you've created your translator, you'll need to update the `translator` key in the `transmatic.php` config file to point to your new class.
 
 ```php
 return [
+    'translator' => Your\Namespace\YourTranslator::class,
 ];
 ```
 
-Optionally, you can publish the views using
+### Configuration Options
 
-```bash
-php artisan vendor:publish --tag="transmatic-views"
+#### Source Locale
+
+The source locale is the language code from which all translations to other languages will be made. This should typically match your application's primary language. By default, this is set to `en`.
+
+```php
+'source_locale' => env('TRANSMATIC_SOURCE_LOCALE', 'en'),
 ```
+
+#### Translation Storage
+
+Transmatic supports multiple methods for storing translations, either in cache or in JSON language files. By default, translations are stored in the cache.
+```php
+'storage' => env('TRANSMATIC_STORAGE', 'cache'),
+```
+
+#### Cache Configuration
+
+If you are using cache storage, you can specify the cache duration and cache key prefix here. By default, translations are cached for 30 days.
+```php
+'cache' => [
+    'duration' => env('TRANSMATIC_CACHE_DURATION', 60 * 24 * 30),
+    'key' => env('TRANSMATIC_CACHE_KEY', 'translations'),
+],
+```
+
+#### File Configuration
+
+If you are using file storage, you can specify the path where your JSON language files will be stored.
+```php
+'file' => [
+    'path' => env('TRANSMATIC_FILE_PATH', 'resources/data/lang'),
+],
+```
+
+#### Batching Configuration
+
+Batch processing is the default behavior for Transmatic. The relevant options include queue name, chunk size, and handling of failed translations.
+```php
+'batching' => [
+    'queue' => env('TRANSMATIC_BATCHING_QUEUE', 'translations'),
+    'chunk_size' => env('TRANSMATIC_BATCHING_CHUNK_SIZE', 50),
+    'allow_failures' => env('TRANSMATIC_BATCHING_ALLOW_FAILURES', true),
+],
+```
+
+For more information, you may refer to the 'config/transmatic.php' file.
 
 ## Usage
 
+### Translating Text
+
+The `translate` method provides an easy way to translate a single string of text. You can specify the target locale as an optional argument. If not specified, the application's current locale will be used.
+
 ```php
-$transmatic = new Wallo\Transmatic();
-echo $transmatic->echoPhrase('Hello, Wallo!');
+use Wallo\Transmatic\Facades\Transmatic;
+
+$translatedText = Transmatic::translate('Hello World', 'es'); // Hola Mundo
 ```
+This method also updates your Source Locale's translations based on the text passed in, ensuring that new strings are stored for future use.
+
+### Translating Multiple Strings
+
+For translating multiple strings at once, use the `translateMany` method. This method accepts an array of strings to translate, as well as an optional target locale. If not specified, the application's current locale will be used.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+$texts = ['Hello World', 'Goodbye World'];
+
+$translatedTexts = Transmatic::translateMany($texts, 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
+```
+Like the `translate` method, this will also update your Source Locale's translations based on the text passed in.
+
+### Fetching Supported Locales
+
+To retrieve a list of supported locales, use the `getSupportedLocales` method. This method will return an array of locales supported by your application. For example, if in your specified file path for storing translations you have a `fr.json` file, this method will return `['en', 'fr']`.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+$supportedLocales = Transmatic::getSupportedLocales(); // ['en', 'fr']
+```
+
+### Fetching Supported Languages
+
+To retrieve a list of supported languages, use the `getSupportedLanguages` method. This method will return an array of languages supported by your application. For example, if in your specified file path for storing translations you have a `fr.json` file, this method will return `['English', 'French']`.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+$supportedLanguages = Transmatic::getSupportedLanguages(); // ['English', 'French']
+```
+
+### Getting Language from Locale
+
+You can get the displayable name of a language from a locale using the `getLanguage` method.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+$language = Transmatic::getLanguage('de'); // German
+```
+
+### Global Helper
+
+For quick and easy translations, you may use the `translate()` helper function.
+```php
+$translatedText = translate('Hello World', 'es');
+```
+
+### Behind the Scenes
+
+#### Managing Translations
+
+When you call the `translate` or `translateMany` methods, Transmatic will first check to see if the translation already exists in your application's source locale. If it does, it will process and return the translations for the specified target locale. If not, it will update your source locale's translations with the new text, and then continue with the translation process.
+
+Transmatic checks if a batch translation process is running for the target locale you specify. If a batch is running, the package fetches the translations from either cache or JSON language files, depending on your configuration.
+
+#### New vs. Existing Translations
+
+For new target locales, Transmatic initiates a queued batch translation process managed by the underlying `TranslateService` class. This allows the package to efficiently handle large volumes of text for translation in one go, thanks to a queuing mechanism.
+
+For existing target locales where most translations are already in place, the `dispatchSync` method is used for immediate, synchronous translation.
+
+#### Importance of a Robust Source Locale
+
+To make the most out of the batch processing feature for new target locales, it's recommended to have a well-populated source locale language file. While the code ensures that the source locale is up-to-date before proceeding with translations, having a robust set of translations in the source locale maximizes the efficiency of the batch processing for new languages.
 
 ## Testing
 
