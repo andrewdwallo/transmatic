@@ -10,3 +10,12 @@ if (! function_exists('translate')) {
         return Transmatic::translate($text, $to);
     }
 }
+
+if (! function_exists('translateMany')) {
+    function translateMany(array $texts, ?string $to = null): array
+    {
+        $to = $to ?? app()->getLocale();
+
+        return Transmatic::translateMany($texts, $to);
+    }
+}
