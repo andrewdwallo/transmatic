@@ -136,29 +136,39 @@ $supportedLocales = Transmatic::getSupportedLocales(); // ['en', 'fr']
 
 ### Fetching Supported Languages
 
-To retrieve a list of supported languages, use the `getSupportedLanguages` method. This method will return an array of languages supported by your application. For example, if in your specified file path for storing translations you have a `fr.json` file, this method will return `['English', 'French']`.
+To retrieve a list of supported languages along with their corresponding locales, use the `getSupportedLanguages` method. This method returns an associative array where the key is the locale and the value is the displayable name of the language. You can also pass a display locale as an optional parameter to get the language names in a specific language. If no display locale is specified, the application's current locale is used.
 
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-$supportedLanguages = Transmatic::getSupportedLanguages(); // ['English', 'French']
+$supportedLanguages = Transmatic::getSupportedLanguages();
+// Output: ['en' => 'English', 'fr' => 'French']
+
+$supportedLanguages = Transmatic::getSupportedLanguages('fr');
+// Output: ['en' => 'Anglais', 'fr' => 'Français']
 ```
 
 ### Getting Language from Locale
 
-You can get the displayable name of a language from a locale using the `getLanguage` method.
+You can get the displayable name of a language from a locale using the `getLanguage` method. This method takes in the locale you're interested in and an optional display locale parameter. If no display locale is specified, it defaults to the application's current locale.
 
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-$language = Transmatic::getLanguage('de'); // German
+$language = Transmatic::getLanguage('de'); 
+// Output: 'Deutsch'
+
+$language = Transmatic::getLanguage('de', 'en'); 
+// Output: 'German'
 ```
 
 ### Global Helper
 
-For quick and easy translations, you may use the `translate()` helper function.
+For quick and easy translations, you may use the `translate()` and `translateMany()` helper functions.
 ```php
-$translatedText = translate('Hello World', 'es');
+$translatedText = translate('Hello World', 'es'); // Hola Mundo
+
+$translatedTexts = Transmatic::translateMany(['Hello World', 'Goodbye World'], 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
 ```
 
 ### Behind the Scenes
