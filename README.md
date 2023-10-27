@@ -177,7 +177,7 @@ For quick and easy translations, you may use the `translate()` and `translateMan
 ```php
 $translatedText = translate('Hello World', 'es'); // Hola Mundo
 
-$translatedTexts = Transmatic::translateMany(['Hello World', 'Goodbye World'], 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
+$translatedTexts = translateMany(['Hello World', 'Goodbye World'], 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
 ```
 
 ### Behind the Scenes
