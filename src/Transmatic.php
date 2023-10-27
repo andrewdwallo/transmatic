@@ -39,20 +39,23 @@ class Transmatic
         return $this->translationHandler->getSupportedLocales();
     }
 
-    public function getSupportedLanguages(): array
+    public function getSupportedLanguages(?string $displayLocale = null): array
     {
         $locales = $this->getSupportedLocales();
         $languages = [];
+        $displayLocale = $displayLocale ?? app()->getLocale();
 
         foreach ($locales as $locale) {
-            $languages[$locale] = $this->getLanguage($locale);
+            $languages[$locale] = $this->getLanguage($locale, $displayLocale);
         }
 
         return $languages;
     }
 
-    public function getLanguage(string $locale): string
+    public function getLanguage(string $locale, ?string $displayLocale = null): string
     {
-        return Locale::getDisplayLanguage($locale, $locale);
+        $displayLocale = $displayLocale ?? app()->getLocale();
+
+        return Locale::getDisplayLanguage($locale, $displayLocale);
     }
 }

@@ -18,6 +18,8 @@ class TranslateService
 
     private int $chunkSize;
 
+    private bool $allowFailures;
+
     private TranslationHandler $translationHandler;
 
     private Translator $translator;
@@ -27,6 +29,7 @@ class TranslateService
         $this->sourceLocale = config('transmatic.source_locale', 'en');
         $this->queue = config('transmatic.batching.queue', 'translations');
         $this->chunkSize = config('transmatic.batching.chunk_size', 50);
+        $this->allowFailures = config('transmatic.batching.allow_failures', true);
         $this->translationHandler = $translationHandler;
         $this->translator = $translator;
     }
@@ -97,7 +100,7 @@ class TranslateService
 
         try {
             Bus::batch($jobs)
-                ->allowFailures()
+                ->allowFailures($this->allowFailures)
                 ->catch(function (Batch $batch, Throwable $e) use ($to) {
                     Log::error('Translation batch failed:', [
                         'batchId' => $batch->id,
