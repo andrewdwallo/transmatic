@@ -1,12 +1,47 @@
-# Transmatic
+![Transmatic Banner](art/transmatic-banner.png)
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/andrewdwallo/transmatic.svg?style=flat-square)](https://packagist.org/packages/andrewdwallo/transmatic)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/andrewdwallo/transmatic/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/andrewdwallo/transmatic/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/andrewdwallo/transmatic/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/andrewdwallo/transmatic/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/andrewdwallo/transmatic.svg?style=flat-square)](https://packagist.org/packages/andrewdwallo/transmatic)
+<p align="center">
+    <a href="https://laravel.com"><img alt="Laravel v10.x" src="https://img.shields.io/badge/Laravel-v10.x-FF2D20?style=for-the-badge&logo=laravel"></a>
+    <a href="https://php.net"><img alt="PHP 8.1" src="https://img.shields.io/badge/PHP-8.1-777BB4?style=for-the-badge&logo=php"></a>
+    <a href="https://packagist.org/packages/andrewdwallo/transmatic"><img alt="Latest Version on Packagist" src="https://img.shields.io/packagist/v/andrewdwallo/transmatic.svg?style=for-the-badge"></a>
+    <a href="https://packagist.org/packages/andrewdwallo/transmatic"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/andrewdwallo/transmatic.svg?style=for-the-badge"></a>
+</p>
 
 Transmatic is a Laravel package for real-time machine translation, enabling instant and dynamic translation across your entire application. Suitable for projects ranging from simple websites to complex SaaS platforms and more, Transmatic offers customization and flexibility. Using advanced machine translation, it makes your app globally accessible. While [AWS Translate](https://aws.amazon.com/translate/) is the default engine, the package can easily integrate with other translation services.
 
+## Common Use Cases
+
+### ⚡️ Application Auto-Translation
+
+With this package, developers can automatically translate their entire application to multiple languages using services like AWS Translate. Say goodbye to manually specifying translations for each language and achieve a multilingual platform in minutes.
+
+#### Benefits
+- **Speed** - Translate your application in minutes.
+- **Auto Locale Management** - The package manages and updates the source locale translations based on the provided text.
+
+### 👤 Personalized User Experience
+
+Empower users to customize their experience by selecting their preferred language. Once selected, the application dynamically adjusts its locale.
+
+#### Benefits
+- **Enhanced User Experience** - Interact in the user's native language.
+- **Real-Time Translation** - Adapt instantly to the user's language selection.
+
+### 🏢 SaaS Tenant-Specific Translations
+
+Optimize the experience for SaaS businesses by offering tenant-specific translations. Each tenant can view their dashboard in their desired language.
+
+#### Benefits
+- **Personalization** - Address each tenant's language choice.
+- **Engagement Boost** - Increase interaction by presenting content in the tenant's chosen language.
+
+### 🛍️ E-Commerce for a Global Audience
+
+Position your e-commerce platform or global marketplace for worldwide reach. Offer product descriptions, reviews, and more in numerous languages.
+
+#### Benefits
+- **Global Reach** - Cater to a global audience.
+- **Enhanced Sales** - Improve conversion rates by engaging customers in their native language.
 
 ## Installation
 
@@ -22,11 +57,11 @@ After the package is installed, run the following command:
 php artisan transmatic:install
 ```
 
-## Preparing Your Application
+## Setting Up Transmatic
 
-### Configuring AWS Translate (Default Service)
+### AWS Translate Integration
 
-The package leverages [AWS Translate](https://aws.amazon.com/translate/) by default. Make sure you've read the [AWS Service Provider for Laravel](https://github.com/aws/aws-sdk-php-laravel) package's documentation and have configured the following environment variables:
+By default, the package leverages [AWS Translate](https://aws.amazon.com/translate/). Ensure you've set the necessary configurations as specified in the [AWS Service Provider for Laravel](https://github.com/aws/aws-sdk-php-laravel) documentation, and have the following environment variables:
 
 ```dotenv
 AWS_ACCESS_KEY_ID=your-access-key-id
@@ -35,82 +70,17 @@ AWS_REGION=your-region  # default is us-east-1
 ```
 These are essential for the AWS SDK to authenticate and interact with AWS services. Once these are set, you don't need to do anything else for AWS Translate to work.
 
-### Configuring Your Translation Service
+### Custom Translation Service Integration
 
-Transmatic is designed to be flexible for any translation service you prefer. By default, we leverage AWS Translate, but you can easily swap this out for any other service. To do so, you'll need to create a new class that implements the `Wallo\Transmatic\Contracts\Translator` contract.
+While AWS Translate is the default, Transmatic allows integration with other translation services. For integration, create a class that adheres to the `Wallo\Transmatic\Contracts\Translator` contract and update the `transmatic.php` config file accordingly.
 
-```php
-namespace Your\Namespace;
+### Configuration Overview
 
-use Wallo\Transmatic\Contracts\Translator;
+Several configuration options are available, including setting the source locale, defining translation storage methods (cache or JSON files), and specifying batch processing behavior. Refer to the `config/transmatic.php` file for a comprehensive look.
 
-class YourTranslator implements Translator
-{
-    public function translate(string $text, string $from, string $to): string
-    {
-        // Your translation logic here
-    }
-}
-```
+## Using Transmatic
 
-Once you've created your translator, you'll need to update the `translator` key in the `transmatic.php` config file to point to your new class.
-
-```php
-'translator' => Your\Namespace\YourTranslator::class,
-```
-
-### Configuration Options
-
-#### Source Locale
-
-The source locale is the language code from which all translations to other languages will be made. This should typically match your application's primary language. By default, this is set to `en`.
-
-```php
-'source_locale' => env('TRANSMATIC_SOURCE_LOCALE', 'en'),
-```
-
-#### Translation Storage
-
-Transmatic supports multiple methods for storing translations, either in cache or in JSON language files. By default, translations are stored in the cache.
-```php
-'storage' => env('TRANSMATIC_STORAGE', 'cache'),
-```
-
-#### Cache Configuration
-
-If you are using cache storage, you can specify the cache duration and cache key prefix here. By default, translations are cached for 30 days.
-```php
-'cache' => [
-    'duration' => env('TRANSMATIC_CACHE_DURATION', 60 * 24 * 30),
-    'key' => env('TRANSMATIC_CACHE_KEY', 'translations'),
-],
-```
-
-#### File Configuration
-
-If you are using file storage, you can specify the path where your JSON language files will be stored.
-```php
-'file' => [
-    'path' => env('TRANSMATIC_FILE_PATH', 'resources/data/lang'),
-],
-```
-
-#### Batching Configuration
-
-Batch processing is the default behavior for Transmatic. The relevant options include queue name, chunk size, and handling of failed translations.
-```php
-'batching' => [
-    'queue' => env('TRANSMATIC_BATCHING_QUEUE', 'translations'),
-    'chunk_size' => env('TRANSMATIC_BATCHING_CHUNK_SIZE', 50),
-    'allow_failures' => env('TRANSMATIC_BATCHING_ALLOW_FAILURES', true),
-],
-```
-
-For more information, you may refer to the `config/transmatic.php` file.
-
-## Usage
-
-### Translating Text
+### Basic & Advanced Usage
 
 The `translate` method provides an easy way to translate a single string of text. You can specify the target locale as an optional argument. If not specified, the application's current locale will be used.
 
@@ -119,7 +89,7 @@ use Wallo\Transmatic\Facades\Transmatic;
 
 $translatedText = Transmatic::translate('Hello World', 'es'); // Hola Mundo
 ```
-This method also updates your Source Locale's translations based on the text passed in, ensuring that new strings are stored for future use.
+This method also updates the translations in your Source Locale based on the text passed in, ensuring that new strings are stored for future use.
 
 ### Translating Multiple Strings
 
@@ -132,7 +102,7 @@ $texts = ['Hello World', 'Goodbye World'];
 
 $translatedTexts = Transmatic::translateMany($texts, 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
 ```
-Like the `translate` method, this will also update your Source Locale's translations based on the text passed in.
+Like the `translate` method, this method will also update the translations in your Source Locale based on the text passed in.
 
 ### Fetching Supported Locales
 
@@ -198,12 +168,6 @@ For existing target locales where most translations are already in place, the `d
 #### Importance of a Robust Source Locale
 
 To make the most out of the batch processing feature for new target locales, it's recommended to have a well-populated source locale language file. While the code ensures that the source locale is up-to-date before proceeding with translations, having a robust set of translations in the source locale maximizes the efficiency of the batch processing for new languages.
-
-## Testing
-
-```bash
-composer test
-```
 
 ## Changelog
 
