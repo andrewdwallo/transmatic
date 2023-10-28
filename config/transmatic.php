@@ -9,6 +9,9 @@ return [
     | Default Translation Service
     |--------------------------------------------------------------------------
     |
+    | This option controls the default translation service that will be used
+    | for translating text. You can set it to any class that implements the
+    | "Translator" interface. The default is set to use AWS Translate.
     |
     */
 

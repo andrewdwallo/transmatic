@@ -2,10 +2,12 @@
 
 namespace Wallo\Transmatic\Jobs;
 
+use GuzzleHttp\Promise\Utils;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Throwable;
 use Wallo\Transmatic\Contracts\TranslationHandler;
 use Wallo\Transmatic\Contracts\Translator;
 
@@ -39,15 +41,22 @@ class ProcessTranslations implements ShouldQueue
 
     /**
      * Execute the job.
+     *
+     * @throws Throwable
      */
     public function handle(): void
     {
-        foreach ($this->texts as $text) {
-            $translatedText = $this->translator->translate($text, $this->sourceLocale, $this->to);
+        $promises = [];
 
-            $translations = $this->translationHandler->retrieve($this->to);
-            $translations[$text] = $translatedText;
-            $this->translationHandler->store($this->to, $translations);
+        foreach ($this->texts as $text) {
+            $promises[$text] = $this->translator->translate($text, $this->sourceLocale, $this->to)
+                ->then(function ($translatedText) use ($text) {
+                    $translations = $this->translationHandler->retrieve($this->to);
+                    $translations[$text] = $translatedText;
+                    $this->translationHandler->store($this->to, $translations);
+                });
         }
+
+        Utils::unwrap($promises);
     }
 }
