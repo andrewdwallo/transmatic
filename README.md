@@ -151,21 +151,21 @@ $translatedText = translate('Hello World', 'es'); // Hola Mundo
 $translatedTexts = translateMany(['Hello World', 'Goodbye World'], 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
 ```
 
-### Behind the Scenes
+## Behind the Scenes
 
-#### Managing Translations
+### Managing Translations
 
 When you call the `translate` or `translateMany` methods, Transmatic will first check to see if the translation already exists in your application's source locale. If it does, it will process and return the translations for the specified target locale. If not, it will update your source locale's translations with the new text, and then continue with the translation process.
 
 Transmatic checks if a batch translation process is running for the target locale you specify. If a batch is running, the package fetches the translations from either cache or JSON language files, depending on your configuration.
 
-#### New vs. Existing Translations
+### New vs. Existing Translations
 
 For new target locales, Transmatic initiates a queued batch translation process managed by the underlying `TranslateService` class. This allows the package to efficiently handle large volumes of text for translation in one go, thanks to a queuing mechanism.
 
 For existing target locales where most translations are already in place, the `dispatchSync` method is used for immediate, synchronous translation.
 
-#### Importance of a Robust Source Locale
+### Importance of a Robust Source Locale
 
 To make the most out of the batch processing feature for new target locales, it's recommended to have a well-populated source locale language file. While the code ensures that the source locale is up-to-date before proceeding with translations, having a robust set of translations in the source locale maximizes the efficiency of the batch processing for new languages.
 
