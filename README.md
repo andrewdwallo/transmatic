@@ -80,7 +80,7 @@ Several configuration options are available, including setting the source locale
 
 ## Using Transmatic
 
-### Basic & Advanced Usage
+### Translating Text
 
 The `translate` method provides an easy way to translate a single string of text. You can specify the target locale as an optional argument. If not specified, the application's current locale will be used.
 
