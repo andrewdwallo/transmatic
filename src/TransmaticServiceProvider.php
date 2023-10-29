@@ -58,14 +58,15 @@ class TransmaticServiceProvider extends PackageServiceProvider
                 throw new InvalidArgumentException("Invalid translator class: {$translator}");
             }
 
-            return new $translator();
+            $instance = new $translator();
+
+            if (! $instance instanceof Translator) {
+                throw new InvalidArgumentException("The class {$translator} must implement Wallo\Transmatic\Contracts\Translator");
+            }
+
+            return $instance;
         });
 
-        $this->app->bind(TranslateService::class, function (): TranslateService {
-            return new TranslateService(
-                $this->app->make(TranslationHandler::class),
-                $this->app->make(Translator::class)
-            );
-        });
+        $this->app->bind(TranslateService::class, TranslateService::class);
     }
 }

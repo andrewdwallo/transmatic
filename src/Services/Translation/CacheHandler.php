@@ -2,7 +2,10 @@
 
 namespace Wallo\Transmatic\Services\Translation;
 
+use Exception;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use RuntimeException;
 use Wallo\Transmatic\Contracts\TranslationHandler;
 
 class CacheHandler implements TranslationHandler
@@ -21,14 +24,35 @@ class CacheHandler implements TranslationHandler
 
     public function store(string $locale, array $translations): void
     {
-        Cache::put("{$this->cacheKey}_{$locale}", $translations, now()->addDays($this->cacheDuration));
+        try {
+            Cache::put("{$this->cacheKey}_{$locale}", $translations, now()->addDays($this->cacheDuration));
+            $this->updateSupportedLocales($locale);
+        } catch (Exception $e) {
+            Log::error("Could not store translations in cache for locale: {$locale}", [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
 
-        $this->updateSupportedLocales($locale);
+            throw new RuntimeException("Could not store translations in cache for locale: {$locale}", $e->getCode(), $e);
+        }
     }
 
     public function retrieve(string $locale): array
     {
-        return Cache::get("{$this->cacheKey}_{$locale}") ?? [];
+        try {
+            return Cache::get("{$this->cacheKey}_{$locale}") ?? [];
+        } catch (Exception $e) {
+            Log::error("Could not retrieve translations from cache for locale: {$locale}", [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            throw new RuntimeException("Could not retrieve translations from cache for locale: {$locale}", $e->getCode(), $e);
+        }
     }
 
     public function isBatchRunning(string $locale): bool

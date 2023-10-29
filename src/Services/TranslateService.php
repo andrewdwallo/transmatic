@@ -91,6 +91,11 @@ class TranslateService
         $englishTranslations = $this->translationHandler->retrieve($this->sourceLocale);
         $textsToTranslate = array_keys($englishTranslations);
 
+        if ($this->chunkSize <= 0) {
+            $count = count($textsToTranslate);
+            $this->chunkSize = $count > 0 ? $count : 200;
+        }
+
         $chunks = array_chunk($textsToTranslate, $this->chunkSize);
 
         $jobs = [];

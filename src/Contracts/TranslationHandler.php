@@ -13,4 +13,6 @@ interface TranslationHandler
     public function setBatchRunning(string $locale): void;
 
     public function setBatchFinished(string $locale): void;
+
+    public function getSupportedLocales(): array;
 }
