@@ -2,6 +2,10 @@
 
 All notable changes to `transmatic` will be documented in this file.
 
+## v1.0.1 - 2023-10-28
+
+**Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.0.0...v1.0.1
+
 ## v1.0.0 - 2023-10-27
 
 ### What's Changed
