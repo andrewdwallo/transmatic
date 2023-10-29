@@ -29,7 +29,7 @@ class TransmaticServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton('transmatic', function (): Transmatic {
+        $this->app->scoped('transmatic', function (): Transmatic {
             return new Transmatic(
                 $this->app->make(TranslateService::class),
                 $this->app->make(TranslationHandler::class)
@@ -37,21 +37,22 @@ class TransmaticServiceProvider extends PackageServiceProvider
         });
 
         $this->app->bind(TranslationHandler::class, static function (): TranslationHandler {
-            $storageType = config('transmatic.storage', 'cache');
+            $storageMap = [
+                'file' => FileHandler::class,
+                'cache' => CacheHandler::class,
+            ];
 
-            if ($storageType === 'file') {
-                return new FileHandler();
-            }
+            $storageType = config('transmatic.storage', 'file');
 
-            if ($storageType === 'cache') {
-                return new CacheHandler();
+            if (array_key_exists($storageType, $storageMap)) {
+                return new $storageMap[$storageType]();
             }
 
             throw new InvalidArgumentException("Invalid translation storage type: {$storageType}");
         });
 
         $this->app->bind(Translator::class, static function (): Translator {
-            $translator = config('transmatic.translator', AwsTranslate::class);
+            $translator = config('transmatic.translator.default', AwsTranslate::class);
 
             if (! class_exists($translator)) {
                 throw new InvalidArgumentException("Invalid translator class: {$translator}");
@@ -60,7 +61,7 @@ class TransmaticServiceProvider extends PackageServiceProvider
             return new $translator();
         });
 
-        $this->app->singleton(TranslateService::class, function (): TranslateService {
+        $this->app->bind(TranslateService::class, function (): TranslateService {
             return new TranslateService(
                 $this->app->make(TranslationHandler::class),
                 $this->app->make(Translator::class)

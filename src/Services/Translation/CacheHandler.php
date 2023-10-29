@@ -7,21 +7,21 @@ use Wallo\Transmatic\Contracts\TranslationHandler;
 
 class CacheHandler implements TranslationHandler
 {
-    protected int $cacheDuration;
-
     protected string $cacheKey;
+
+    protected int $cacheDuration;
 
     protected string $supportedLocalesKey = 'supported_locales';
 
     public function __construct()
     {
-        $this->cacheDuration = config('transmatic.cache.duration', 60 * 24 * 30);
         $this->cacheKey = config('transmatic.cache.key', 'translations');
+        $this->cacheDuration = config('transmatic.cache.duration', 30);
     }
 
     public function store(string $locale, array $translations): void
     {
-        Cache::put("{$this->cacheKey}_{$locale}", $translations, $this->cacheDuration);
+        Cache::put("{$this->cacheKey}_{$locale}", $translations, now()->addDays($this->cacheDuration));
 
         $this->updateSupportedLocales($locale);
     }
@@ -52,7 +52,7 @@ class CacheHandler implements TranslationHandler
 
         if (! in_array($locale, $supportedLocales, true)) {
             $supportedLocales[] = $locale;
-            Cache::put($this->supportedLocalesKey, $supportedLocales, $this->cacheDuration);
+            Cache::put($this->supportedLocalesKey, $supportedLocales, now()->addDays($this->cacheDuration));
         }
     }
 

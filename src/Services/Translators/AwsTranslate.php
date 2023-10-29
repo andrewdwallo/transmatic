@@ -12,9 +12,25 @@ use Wallo\Transmatic\Contracts\Translator;
 
 class AwsTranslate implements Translator
 {
+    protected int $timeout;
+
+    public function __construct()
+    {
+        $this->timeout = config('transmatic.translator.timeout', 30);
+    }
+
+    public function setTimeout(int $seconds): void
+    {
+        $this->timeout = $seconds;
+    }
+
     public function translate(string $text, string $from, string $to): PromiseInterface
     {
-        $aws = AwsFacade::createClient('translate');
+        $aws = AwsFacade::createClient('translate', [
+            'http' => [
+                'timeout' => $this->timeout,
+            ],
+        ]);
 
         /** @var TranslateClient $aws */
         $promise = $aws->translateTextAsync([
