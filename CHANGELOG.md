@@ -2,6 +2,18 @@
 
 All notable changes to `transmatic` will be documented in this file.
 
+## v1.0.3 - 2023-11-01
+
+### What's Changed
+
+- feat: Support translation placeholders by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/4
+
+### New Contributors
+
+- @andrewdwallo made their first contribution in https://github.com/andrewdwallo/transmatic/pull/4
+
+**Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.0.2...v1.0.3
+
 ## v1.0.2 - 2023-10-29
 
 **Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.0.1...v1.0.2
