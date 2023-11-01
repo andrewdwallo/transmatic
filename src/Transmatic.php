@@ -18,19 +18,19 @@ class Transmatic
         $this->translationHandler = $translationHandler;
     }
 
-    public function translate(string $text, ?string $to = null): string
+    public function translate(string $text, array $replace = [], ?string $to = null): string
     {
         $to = $to ?? app()->getLocale();
 
-        return $this->translateService->getCachedTranslation($text, $to);
+        return $this->translateService->getCachedTranslation($text, $replace, $to);
     }
 
-    public function translateMany(array $texts, ?string $to = null): array
+    public function translateMany(array $texts, array $replace = [], ?string $to = null): array
     {
         $to = $to ?? app()->getLocale();
 
-        return array_map(function ($text) use ($to) {
-            return $this->translateService->getCachedTranslation($text, $to);
+        return array_map(function ($text) use ($replace, $to) {
+            return $this->translateService->getCachedTranslation($text, $replace, $to);
         }, $texts);
     }
 

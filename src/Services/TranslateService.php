@@ -5,6 +5,7 @@ namespace Wallo\Transmatic\Services;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Throwable;
 use Wallo\Transmatic\Contracts\TranslationHandler;
 use Wallo\Transmatic\Contracts\Translator;
@@ -40,12 +41,12 @@ class TranslateService
         $this->translator = $translator;
     }
 
-    public function getCachedTranslation(string $text, string $to): string
+    public function getCachedTranslation(string $text, array $replace, string $to): string
     {
         $this->updateEnglishTranslation($text);
 
         if ($to === $this->sourceLocale) {
-            return $text;
+            return $this->makeReplacements($text, $replace);
         }
 
         $batchRunning = $this->translationHandler->isBatchRunning($to);
@@ -53,10 +54,10 @@ class TranslateService
         if ($batchRunning) {
             $translations = $this->translationHandler->retrieve($to);
 
-            return $translations[$text] ?? $text;
+            return $this->makeReplacements($translations[$text] ?? $text, $replace);
         }
 
-        return $this->handleStorage($text, $to);
+        return $this->handleStorage($text, $replace, $to);
     }
 
     private function updateEnglishTranslation(string $text): void
@@ -69,7 +70,7 @@ class TranslateService
         }
     }
 
-    private function handleStorage(string $text, string $to): string
+    private function handleStorage(string $text, array $replace, string $to): string
     {
         $translations = $this->translationHandler->retrieve($to);
 
@@ -83,7 +84,9 @@ class TranslateService
             $translations = $this->translationHandler->retrieve($to);
         }
 
-        return $translations[$text] ?? $text;
+        $translatedText = $translations[$text] ?? $text;
+
+        return $this->makeReplacements($translatedText, $replace);
     }
 
     private function generateAllTranslationsForLocale(string $to): void
@@ -132,5 +135,29 @@ class TranslateService
                 'exception' => $e->getMessage(),
             ]);
         }
+    }
+
+    private function makeReplacements(string $text, array $replace): string
+    {
+        if (empty($replace)) {
+            return $text;
+        }
+
+        $shouldReplace = $this->prepareReplacements($replace);
+
+        return strtr($text, $shouldReplace);
+    }
+
+    private function prepareReplacements(array $replace): array
+    {
+        $prepared = [];
+
+        foreach ($replace as $key => $value) {
+            $prepared[':' . Str::ucfirst($key)] = Str::ucfirst($value);
+            $prepared[':' . Str::upper($key)] = Str::upper($value);
+            $prepared[':' . $key] = $value;
+        }
+
+        return $prepared;
     }
 }
