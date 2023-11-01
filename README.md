@@ -104,6 +104,16 @@ $translatedTexts = Transmatic::translateMany($texts, 'fr'); // ['Bonjour le mond
 ```
 Like the `translate` method, this method will also update the translations in your Source Locale based on the text passed in.
 
+### Using Translation Placeholders
+
+You may use placeholders in your translations. To do so, use the `:placeholder` syntax in your translation strings. When translating, pass in an array of values to replace the placeholders.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+$translatedText = Transmatic::translate('Hello :placeholder', 'es', ['placeholder' => 'World']); // Hola Mundo
+```
+
 ### Fetching Supported Locales
 
 To retrieve a list of supported locales, use the `getSupportedLocales` method. This method will return an array of locales supported by your application. For example, if in your specified file path for storing translations you have a `fr.json` file, this method will return `['en', 'fr']`.

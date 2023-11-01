@@ -11,13 +11,23 @@ return [
     |
     | Controls the default service to use for translations. The "timeout"
     | option limits the wait time, in seconds, for a response from the
-    | translation service.
+    | translation service. The "placeholder_format" option specifies the
+    | format that your translation service uses for placeholders. For example,
+    | if you set this to "#placeholder", then the translation service will
+    | look for placeholders such as "#name", "#age", etc. Note that this format
+    | is only for the translation service; you should continue using Laravel's
+    | default ":placeholder" format when passing text to be translated. The
+    | "supports_placeholders" flag indicates whether your translation service
+    | is capable of supporting placeholders. Set to "true" if the service can
+    | handle placeholders, or "false" otherwise.
     |
     */
 
     'translator' => [
         'default' => AwsTranslate::class,
         'timeout' => env('TRANSMATIC_TRANSLATOR_TIMEOUT', 30),
+        'placeholder_format' => '#placeholder',
+        'supports_placeholders' => true,
     ],
 
     /*
