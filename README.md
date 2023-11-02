@@ -111,7 +111,7 @@ You may use placeholders in your translations. To do so, use the `:placeholder` 
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-$translatedText = Transmatic::translate('Hello :placeholder', 'es', ['placeholder' => 'World']); // Hola Mundo
+$translatedText = Transmatic::translate('Hello :placeholder', 'es', ['placeholder' => 'World']); // Hola World
 ```
 
 ### Fetching Supported Locales
