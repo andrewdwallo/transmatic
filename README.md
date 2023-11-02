@@ -111,7 +111,7 @@ You may use placeholders in your translations. To do so, use the `:placeholder` 
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-$translatedText = Transmatic::translate('Hello :placeholder', 'es', ['placeholder' => 'World']); // Hola World
+$translatedText = Transmatic::translate('Hello :placeholder', 'es', ['placeholder' => 'World']); // Hola Mundo
 ```
 
 ### Fetching Supported Locales
@@ -267,16 +267,72 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Thank you for considering contributing to Transmatic! Follow these steps to get started:
 
-## Security Vulnerabilities
+1. Fork the Repository: Fork this repository to your GitHub account.
+2. Create a Fresh Laravel Project: If you don't already have a Laravel project set up, create one.
+3. Clone Your Forked Repository: Clone your forked Transmatic repository into your Laravel application's root directory.
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+```bash
+git clone https://github.com/your-github-username/transmatic.git
+```
 
-## Credits
+4. Create a New Branch: Inside the '/transmatic' directory, create a branch for your fix or feature. For instance, if you're working on an error message fix, you might name your branch `fix/error-message`.
 
-- [Andrew Wallo](https://github.com/andrewdwallo)
-- [All Contributors](../../contributors)
+```bash
+git checkout -b fix/error-message
+```
+
+5. Install the Package Locally: Update your application's `composer.json` file to include the local package. Use the `dev` prefix followed by your branch's name:
+
+```jsonc
+{
+    // ...
+    "require": {
+        "andrewdwallo/transmatic": "dev-fix/error-message"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "transmatic/"
+        }
+    ],
+    // ...
+}
+```
+
+6. Update Composer: Run `composer update` to install the local version of the package in your Laravel project.
+
+Once you've made your changes, commit them, push to your branch, and then create a pull request. Your contributions are highly valued and appreciated!
+
+## Need Help?
+
+Thank you for your interest in Transmatic! Whether you're just getting started, have spotted a bug, or are thinking of a new feature, here's how you can get help:
+
+### 🐛 Spotted a Bug?
+
+If you think you've found a bug in Transmatic:
+
+1. First, check the [Issues](https://github.com/andrewdwallo/transmatic/issues) section to see if someone else has already reported the same problem.
+2. If it's an unreported bug, please open a new issue, providing as much detail as possible, including steps to reproduce the issue.
+3. Feel free to fix the bug yourself! Follow the [Contributing](#contributing) guidelines to get started.
+
+### 🙋‍♂️ Have a Question or Feature Request?
+
+If you have questions about how to use Transmatic or ideas for new features:
+
+1. Start by checking the [Documentation](#installation) to see if your question is already answered.
+2. For specific questions or general discussion, visit [Discussions](https://github.com/andrewdwallo/transmatic/discussions).
+   - Have a question? Head over to [Q&A](https://github.com/andrewdwallo/transmatic/discussions/categories/q-a).
+   - Want to share an idea or feature request? Share it in [Feature Requests](https://github.com/andrewdwallo/transmatic/discussions/categories/feature-requests).
+
+### 🔐 Discovered a Security Vulnerability?
+
+Security is a top priority. If you discover any issue regarding security:
+
+1. Please DO NOT open an issue on GitHub. Disclosing security vulnerabilities publicly can be harmful.
+2. Instead, review the [Security Policy](../../security/policy) for instructions on how to report a security vulnerability.
+3. I'm dedicated to keeping users safe and will address valid security concerns diligently.
 
 ## License
 
