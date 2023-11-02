@@ -2,6 +2,14 @@
 
 All notable changes to `transmatic` will be documented in this file.
 
+## v1.0.4 - 2023-11-02
+
+### What's Changed
+
+- feat: Support global locale override and processing all missing trans… by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/5
+
+**Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.0.3...v1.0.4
+
 ## v1.0.3 - 2023-11-01
 
 ### What's Changed
