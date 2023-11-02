@@ -43,7 +43,7 @@ class TranslateService
 
     public function getCachedTranslation(string $text, array $replace, string $to): string
     {
-        $this->updateEnglishTranslation($text);
+        $this->updateSourceTranslation($text);
 
         if ($to === $this->sourceLocale) {
             return $this->makeReplacements($text, $replace);
@@ -60,27 +60,37 @@ class TranslateService
         return $this->handleStorage($text, $replace, $to);
     }
 
-    private function updateEnglishTranslation(string $text): void
+    public function processMissingTranslationsForLocales(array $locales): void
     {
-        $englishTranslations = $this->translationHandler->retrieve($this->sourceLocale);
+        foreach ($locales as $locale) {
+            $this->generateMissingTranslationsForLocales($locale);
+        }
+    }
 
-        if (! array_key_exists($text, $englishTranslations)) {
-            $englishTranslations[$text] = $text;
-            $this->translationHandler->store($this->sourceLocale, $englishTranslations);
+    private function updateSourceTranslation(string $text): void
+    {
+        $sourceTranslations = $this->translationHandler->retrieve($this->sourceLocale);
+
+        if (! array_key_exists($text, $sourceTranslations)) {
+            $sourceTranslations[$text] = $text;
+            $this->translationHandler->store($this->sourceLocale, $sourceTranslations);
         }
     }
 
     private function handleStorage(string $text, array $replace, string $to): string
     {
         $translations = $this->translationHandler->retrieve($to);
+        $sourceTranslations = $this->translationHandler->retrieve($this->sourceLocale);
 
         if (empty($translations)) {
             $this->generateAllTranslationsForLocale($to);
             $translations = $this->translationHandler->retrieve($to);
         }
 
-        if (! array_key_exists($text, $translations)) {
-            ProcessTranslations::dispatchSync($this->translator, $this->translationHandler, [$text], $to);
+        if (array_key_exists($text, $sourceTranslations) && ! array_key_exists($text, $translations)) {
+            $missingTranslations = array_diff_key($sourceTranslations, $translations);
+            $textsToTranslate = array_keys($missingTranslations);
+            ProcessTranslations::dispatchSync($this->translator, $this->translationHandler, $textsToTranslate, $to);
             $translations = $this->translationHandler->retrieve($to);
         }
 
@@ -91,8 +101,8 @@ class TranslateService
 
     private function generateAllTranslationsForLocale(string $to): void
     {
-        $englishTranslations = $this->translationHandler->retrieve($this->sourceLocale);
-        $textsToTranslate = array_keys($englishTranslations);
+        $sourceTranslations = $this->translationHandler->retrieve($this->sourceLocale);
+        $textsToTranslate = array_keys($sourceTranslations);
 
         if ($this->chunkSize <= 0) {
             $count = count($textsToTranslate);
@@ -132,6 +142,59 @@ class TranslateService
         } catch (Throwable $e) {
             Log::error('Failed to dispatch translation batch:', [
                 'locale' => $to,
+                'exception' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function generateMissingTranslationsForLocales(string $locale): void
+    {
+        $sourceTranslations = $this->translationHandler->retrieve($this->sourceLocale);
+        $translations = $this->translationHandler->retrieve($locale);
+
+        $missingTranslations = array_diff_key($sourceTranslations, $translations);
+        $textsToTranslate = array_keys($missingTranslations);
+
+        if (empty($textsToTranslate)) {
+            return;
+        }
+
+        $this->queueMissingTranslationsForLocale($textsToTranslate, $locale);
+    }
+
+    private function queueMissingTranslationsForLocale(array $textsToTranslate, string $locale): void
+    {
+        if ($this->chunkSize <= 0) {
+            $count = count($textsToTranslate);
+            $this->chunkSize = $count > 0 ? $count : 200;
+        }
+
+        $chunks = array_chunk($textsToTranslate, $this->chunkSize);
+
+        $jobs = [];
+
+        foreach ($chunks as $chunk) {
+            $job = new ProcessTranslations($this->translator, $this->translationHandler, $chunk, $locale);
+            $jobs[] = $job;
+        }
+
+        try {
+            Bus::batch($jobs)
+                ->name($this->name)
+                ->onConnection($this->connection)
+                ->onQueue($this->queue)
+                ->allowFailures($this->allowFailures)
+                ->catch(function (Batch $batch, Throwable $e) use ($locale) {
+                    Log::error('Translation batch failed:', [
+                        'batchId' => $batch->id,
+                        'locale' => $locale,
+                        'exception' => $e->getMessage(),
+                    ]);
+                })
+                ->dispatch();
+        } catch (Throwable $e) {
+            Log::error('Failed to dispatch translation batch:', [
+                'locale' => $locale,
                 'exception' => $e->getMessage(),
             ]);
         }

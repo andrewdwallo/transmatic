@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Wallo\Transmatic\Commands\ProcessMissingTranslationsCommand;
 use Wallo\Transmatic\Contracts\TranslationHandler;
 use Wallo\Transmatic\Contracts\Translator;
 use Wallo\Transmatic\Services\TranslateService;
@@ -20,6 +21,7 @@ class TransmaticServiceProvider extends PackageServiceProvider
         $package
             ->name('transmatic')
             ->hasConfigFile()
+            ->hasCommand(ProcessMissingTranslationsCommand::class)
             ->hasInstallCommand(static function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
