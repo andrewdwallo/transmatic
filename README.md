@@ -161,6 +161,88 @@ $translatedText = translate('Hello World', 'es'); // Hola Mundo
 $translatedTexts = translateMany(['Hello World', 'Goodbye World'], 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
 ```
 
+## Overriding the Global Locale
+
+If you want to override the default locale for all translation methods that do not have a specified `$to` parameter, you can use the `setGlobalLocale` method. This will set a global locale override, ensuring that the provided locale is used as the default for translations.
+
+### Setting the Global Locale in a Service Provider
+
+In your Service Provider's `boot` method, you can call the `setGlobalLocale` method to set the global locale override.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+public function boot()
+{
+    Transmatic::setGlobalLocale('fr');
+}
+
+```
+
+When you use the translation methods after setting this global locale, they will default to this overridden locale unless another locale is specified.
+
+#### Example
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+Transmatic::setGlobalLocale('fr');
+
+$translatedText = Transmatic::translate('Hello World'); // Bonjour le monde
+```
+
+Remember, specifying a locale in the translation methods will always take precedence over the global locale override.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+Transmatic::setGlobalLocale('fr');
+
+$translatedText = Transmatic::translate('Hello World', 'es'); // Hola Mundo
+```
+
+## Processing Missing Translations
+
+To ensure all your translations are up-to-date, especially when there are missing translations for certain locales, you can utilize the functionality to process missing translations. This will help in generating the missing translations for all the supported locales excluding the source locale.
+
+### Using the Facade in a Service Provider
+
+In your Service Provider's `boot` method, you have two options when calling the facade to process missing translations:
+
+#### Specifying Locales
+You can process missing translations for a specific list of locales using the `processMissingTranslationsFor` method.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+public function boot()
+{
+    Transmatic::processMissingTranslationsFor(['fr', 'de']);
+}
+```
+
+#### Processing All Supported Locales
+
+You can process all the missing translations for all the supported locales excluding the source locale using the processMissingTranslations method.
+
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+public function boot()
+{
+    Transmatic::processMissingTranslations();
+}
+```
+
+### Using the Artisan Command
+
+If you would prefer to manually trigger the processing of missing translations, you may use the console command `transmatic:process-missing-translations`. This command will provide you with a list of all the supported locales excluding the source locale, and you can choose which locales you would like to process. You may choose to process all the locales at once by selecting the `All` option.
+
+This command is especially useful during development when you're adding new translations to your source locale and want to process the missing translations for all the supported locales.
+```bash
+php artisan transmatic:process-missing-translations
+```
+
 ## Behind the Scenes
 
 ### Managing Translations
