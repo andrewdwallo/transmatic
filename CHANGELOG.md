@@ -2,6 +2,18 @@
 
 All notable changes to `transmatic` will be documented in this file.
 
+## v1.0.5 - 2023-11-03
+
+### What's Changed
+
+- Update README by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/7
+- Create SECURITY.md by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/8
+- Update bug.yml by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/9
+- Update config.yml by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/10
+- Update README.md by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/11
+
+**Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.0.4...v1.0.5
+
 ## v1.0.4 - 2023-11-02
 
 ### What's Changed
