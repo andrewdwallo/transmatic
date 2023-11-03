@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Ask a question
+  - name: Have a Question?
     url: https://github.com/andrewdwallo/transmatic/discussions/new?category=q-a
-    about: Ask the community for help
-  - name: Request a feature
-    url: https://github.com/andrewdwallo/transmatic/discussions/new?category=ideas
-    about: Share ideas for new features
-  - name: Report a security issue
-    url: https://github.com/andrewdwallo/transmatic/security/policy
-    about: Learn how to notify us for sensitive bugs
+    about: Seek assistance or clarification from the community.
+  - name: Suggest a Feature
+    url: https://github.com/andrewdwallo/transmatic/discussions/new?category=feature-requests
+    about: Propose enhancements or new ideas for Transmatic.
+  - name: Show & Tell Showcase
+    url: https://github.com/andrewdwallo/transmatic/discussions/new?category=show-tell
+    about: Share your work, inspire the community, and get feedback from fellow developers.
