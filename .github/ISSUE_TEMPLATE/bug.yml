@@ -1,62 +1,93 @@
 name: Bug Report
-description: Report an Issue or Bug with the Package
-title: "[Bug]: "
-labels: ["bug"]
+description: Report a problem you're experiencing
+labels: bug, unconfirmed, low priority
 body:
     - type: markdown
       attributes:
           value: |
-              We're sorry to hear you have a problem. Can you help us solve it by providing the following details.
-    - type: textarea
-      id: what-happened
-      attributes:
-          label: What happened?
-          description: What did you expect to happen?
-          placeholder: I cannot currently do X thing because when I do, it breaks X thing.
-      validations:
-          required: true
-    - type: textarea
-      id: how-to-reproduce
-      attributes:
-          label: How to reproduce the bug
-          description: How did this occur, please add any config values used and provide a set of reliable steps if possible.
-          placeholder: When I do X I see Y.
-      validations:
-          required: true
+              Before opening a bug report, please search the existing issues (both open and closed).
+
+              ---
+              
+              Thank you for taking the time to report a bug! The more details you provide, the easier it will be to help you.
+              Please ensure that you don't share any sensitive information like passwords or API keys.
     - type: input
       id: package-version
       attributes:
           label: Package Version
-          description: What version of our Package are you running? Please be as specific as possible
-          placeholder: 2.0.0
+          description: Please provide the full version of the package you have installed.
+          placeholder: 1.0.0
       validations:
           required: true
     - type: input
       id: php-version
       attributes:
           label: PHP Version
-          description: What version of PHP are you running? Please be as specific as possible
+          description: Please provide the full PHP version of your server.
           placeholder: 8.2.0
       validations:
           required: true
     - type: input
       id: laravel-version
       attributes:
-        label: Laravel Version
-        description: What version of Laravel are you running? Please be as specific as possible
-        placeholder: 9.0.0
+          label: Laravel Version
+          description: Please provide the full Laravel version of your project.
+          placeholder: 10.0.0
       validations:
-        required: true
+          required: true
     - type: dropdown
-      id: operating-systems
+      id: operating-system
       attributes:
-        label: Which operating systems does with happen with?
-        description: You may select more than one.
-        multiple: true
-        options:
-        - macOS
-        - Windows
-        - Linux
+          label: Which operating system do you use?
+          description: Please select your primary operating system.
+          options:
+            - macOS
+            - Windows
+            - Linux
+      validations:
+          required: false
+    - type: dropdown
+      id: translation-service
+      attributes:
+          label: Translation Service
+          description: Which translation service are you using?
+          options:
+            - AWS Translate
+            - Google Cloud Translation
+            - Azure AI Translator
+            - DeepL
+            - Other
+      validations:
+          required: true
+    - type: textarea
+      id: environment-details
+      attributes:
+          label: Environment Details
+          description: Are there any other specifics about your environment that might be relevant?
+          placeholder: Using Homestead, Nginx, etc.
+      validations:
+          required: false
+    - type: textarea
+      id: description
+      attributes:
+          label: Problem Description
+          description: Provide a detailed account of the issue you encountered. What did you observe?
+      validations:
+          required: true
+    - type: textarea
+      id: expectation
+      attributes:
+          label: Expected Behavior
+          description: Describe the outcome you anticipated to occur instead.
+      validations:
+          required: true
+    - type: textarea
+      id: steps
+      attributes:
+          label: Steps To Reproduce
+          description: Outline the series of actions taken that led to the observed behavior.
+      validations:
+          required: true
     - type: textarea
       id: notes
       attributes:
