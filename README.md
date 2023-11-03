@@ -261,29 +261,25 @@ For existing target locales where most translations are already in place, the `d
 
 To make the most out of the batch processing feature for new target locales, it's recommended to have a well-populated source locale language file. While the code ensures that the source locale is up-to-date before proceeding with translations, having a robust set of translations in the source locale maximizes the efficiency of the batch processing for new languages.
 
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
 ## Contributing
 
 Thank you for considering contributing to Transmatic! Follow these steps to get started:
 
-1. Fork the Repository: Fork this repository to your GitHub account.
-2. Create a Fresh Laravel Project: If you don't already have a Laravel project set up, create one.
-3. Clone Your Forked Repository: Clone your forked Transmatic repository into your Laravel application's root directory.
+1. **Fork the Repository**: Fork this repository to your GitHub account.
+2. **Create a Fresh Laravel Project**: If you don't already have a Laravel project set up, create one.
+3. **Clone Your Forked Repository**: Clone your forked Transmatic repository into your Laravel application's root directory.
 
 ```bash
 git clone https://github.com/your-github-username/transmatic.git
 ```
 
-4. Create a New Branch: Inside the '/transmatic' directory, create a branch for your fix or feature. For instance, if you're working on an error message fix, you might name your branch `fix/error-message`.
+4. **Create a New Branch**: Inside the '/transmatic' directory, create a branch for your fix or feature. For instance, if you're working on an error message fix, you might name your branch `fix/error-message`.
 
 ```bash
 git checkout -b fix/error-message
 ```
 
-5. Install the Package Locally: Update your application's `composer.json` file to include the local package. Use the `dev` prefix followed by your branch's name:
+5. **Install the Package Locally**: Update your application's `composer.json` file to include the local package. Use the `dev` prefix followed by your branch's name:
 
 ```jsonc
 {
@@ -301,7 +297,7 @@ git checkout -b fix/error-message
 }
 ```
 
-6. Update Composer: Run `composer update` to install the local version of the package in your Laravel project.
+6. **Update Composer**: Run `composer update` to install the local version of the package in your Laravel project.
 
 Once you've made your changes, commit them, push to your branch, and then create a pull request. Your contributions are highly valued and appreciated!
 
@@ -330,9 +326,13 @@ If you have questions about how to use Transmatic or ideas for new features:
 
 Security is a top priority. If you discover any issue regarding security:
 
-1. Please DO NOT open an issue on GitHub. Disclosing security vulnerabilities publicly can be harmful.
+1. Please **DO NOT** open an issue on GitHub. Disclosing security vulnerabilities publicly can be harmful.
 2. Instead, review the [Security Policy](../../security/policy) for instructions on how to report a security vulnerability.
 3. I'm dedicated to keeping users safe and will address valid security concerns diligently.
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
 ## License
 
