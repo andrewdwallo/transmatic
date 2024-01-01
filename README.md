@@ -59,6 +59,34 @@ php artisan transmatic:install
 
 ## Setting Up Transmatic
 
+### Queue and Batch Processing Setup
+
+This package utilizes Laravel's queue jobs and batch processing features. The specific setup requirements depend on the queue driver configured in your Laravel application.
+
+#### Database Queue Driver
+
+If you are using the database queue driver, you'll need the following tables in your database:
+
+- `jobs`: For managing queued jobs.
+- `job_batches`: For batch processing.
+
+If these tables are not already present in your database, you can create them by running the following commands:
+
+```bash
+php artisan queue:table
+php artisan queue:batches-table
+```
+
+Once the tables are created, run the following command to migrate them:
+
+```bash
+php artisan migrate
+```
+
+For users utilizing other queue drivers (such as redis, sqs, beanstalkd, etc.), refer to the [official Laravel documentation on queues](https://laravel.com/docs/10.x/queues#introduction) for specific setup instructions.
+
+> 🚧 It's important to configure and manage the queue system as per your application's requirements. Proper configuration ensures efficient handling of background jobs and tasks by the package.
+
 ### AWS Translate Integration
 
 By default, the package leverages [AWS Translate](https://aws.amazon.com/translate/). Ensure you've set the necessary configurations as specified in the [AWS Service Provider for Laravel](https://github.com/aws/aws-sdk-php-laravel) documentation, and have the following environment variables:
@@ -82,13 +110,22 @@ Several configuration options are available, including setting the source locale
 
 ### Translating Text
 
-The `translate` method provides an easy way to translate a single string of text. You can specify the target locale as an optional argument. If not specified, the application's current locale will be used.
+The `translate` method provides an easy way to translate a single string of text. It allows you to optionally specify replacement data for placeholders as well as the target locale. If the target locale is not specified, the application's current locale will be used.
 
+#### Using Traditional Arguments:
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-$translatedText = Transmatic::translate('Hello World', 'es'); // Hola Mundo
+$translatedText = Transmatic::translate('Hello World', [], 'es'); // Hola Mundo
 ```
+
+#### Using Named Arguments (PHP 8.0+):
+```php
+use Wallo\Transmatic\Facades\Transmatic;
+
+$translatedText = Transmatic::translate(text: 'Hello World', to: 'es'); // Hola Mundo
+```
+
 This method also updates the translations in your Source Locale based on the text passed in, ensuring that new strings are stored for future use.
 
 ### Translating Multiple Strings
@@ -100,7 +137,7 @@ use Wallo\Transmatic\Facades\Transmatic;
 
 $texts = ['Hello World', 'Goodbye World'];
 
-$translatedTexts = Transmatic::translateMany($texts, 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
+$translatedTexts = Transmatic::translateMany(texts: $texts, to: 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
 ```
 Like the `translate` method, this method will also update the translations in your Source Locale based on the text passed in.
 
@@ -111,7 +148,7 @@ You may use placeholders in your translations. To do so, use the `:placeholder` 
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-$translatedText = Transmatic::translate('Hello :placeholder', 'es', ['placeholder' => 'World']); // Hola World
+$translatedText = Transmatic::translate(text: 'Hello :name', replace: ['name' => 'John'], to: 'es'); // Hola John
 ```
 
 ### Fetching Supported Locales
@@ -134,7 +171,7 @@ use Wallo\Transmatic\Facades\Transmatic;
 $supportedLanguages = Transmatic::getSupportedLanguages();
 // Output: ['en' => 'English', 'fr' => 'French']
 
-$supportedLanguages = Transmatic::getSupportedLanguages('fr');
+$supportedLanguages = Transmatic::getSupportedLanguages(displayLocale: 'fr');
 // Output: ['en' => 'Anglais', 'fr' => 'Français']
 ```
 
@@ -145,10 +182,10 @@ You can get the displayable name of a language from a locale using the `getLangu
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-$language = Transmatic::getLanguage('de'); 
+$language = Transmatic::getLanguage(locale: 'de'); 
 // Output: 'Deutsch'
 
-$language = Transmatic::getLanguage('de', 'en'); 
+$language = Transmatic::getLanguage(locale: 'de', displayLocale: 'en'); 
 // Output: 'German'
 ```
 
@@ -156,9 +193,9 @@ $language = Transmatic::getLanguage('de', 'en');
 
 For quick and easy translations, you may use the `translate()` and `translateMany()` helper functions.
 ```php
-$translatedText = translate('Hello World', 'es'); // Hola Mundo
+$translatedText = translate(text: 'Hello World', to: 'es'); // Hola Mundo
 
-$translatedTexts = translateMany(['Hello World', 'Goodbye World'], 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
+$translatedTexts = translateMany(texts: ['Hello World', 'Goodbye World'], to: 'fr'); // ['Bonjour le monde', 'Au revoir le monde']
 ```
 
 ## Overriding the Global Locale
@@ -174,7 +211,7 @@ use Wallo\Transmatic\Facades\Transmatic;
 
 public function boot()
 {
-    Transmatic::setGlobalLocale('fr');
+    Transmatic::setGlobalLocale(locale: 'fr');
 }
 
 ```
@@ -186,9 +223,9 @@ When you use the translation methods after setting this global locale, they will
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-Transmatic::setGlobalLocale('fr');
+Transmatic::setGlobalLocale(locale: 'fr');
 
-$translatedText = Transmatic::translate('Hello World'); // Bonjour le monde
+$translatedText = Transmatic::translate(text: 'Hello World'); // Bonjour le monde
 ```
 
 Remember, specifying a locale in the translation methods will always take precedence over the global locale override.
@@ -196,9 +233,9 @@ Remember, specifying a locale in the translation methods will always take preced
 ```php
 use Wallo\Transmatic\Facades\Transmatic;
 
-Transmatic::setGlobalLocale('fr');
+Transmatic::setGlobalLocale(locale: 'fr');
 
-$translatedText = Transmatic::translate('Hello World', 'es'); // Hola Mundo
+$translatedText = Transmatic::translate(text: 'Hello World', to: 'es'); // Hola Mundo
 ```
 
 ## Processing Missing Translations
@@ -217,7 +254,7 @@ use Wallo\Transmatic\Facades\Transmatic;
 
 public function boot()
 {
-    Transmatic::processMissingTranslationsFor(['fr', 'de']);
+    Transmatic::processMissingTranslationsFor(locales: ['fr', 'de']);
 }
 ```
 
