@@ -4,7 +4,11 @@
     "keywords": [
         "andrewdwallo",
         "laravel",
-        "transmatic"
+        "transmatic",
+        "translation",
+        "localization",
+        "translations",
+        "aws"
     ],
     "homepage": "https://github.com/andrewdwallo/transmatic",
     "license": "MIT",
@@ -38,8 +42,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Wallo\\Transmatic\\": "src/",
-            "Wallo\\Transmatic\\Database\\Factories\\": "database/factories/"
+            "Wallo\\Transmatic\\": "src/"
         },
         "files": [
             "src/helpers.php"
