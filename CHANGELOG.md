@@ -2,6 +2,15 @@
 
 All notable changes to `transmatic` will be documented in this file.
 
+## v1.1.0 - 2024-03-22
+
+### What's Changed
+
+* Laravel 11 by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/20
+* Bump ramsey/composer-install from 2 to 3 by @dependabot in https://github.com/andrewdwallo/transmatic/pull/19
+
+**Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.0.6...v1.1.0
+
 ## v1.0.6 - 2024-01-01
 
 ### What's Changed
