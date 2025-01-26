@@ -2,6 +2,16 @@
 
 All notable changes to `transmatic` will be documented in this file.
 
+## v1.1.1 - 2025-01-26
+
+### What's Changed
+
+* build(deps): bump aglipanci/laravel-pint-action from 2.3.1 to 2.4 by @dependabot in https://github.com/andrewdwallo/transmatic/pull/22
+* Add support for cleaning translations by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/25
+* build(deps): bump dependabot/fetch-metadata from 1.6.0 to 2.3.0 by @dependabot in https://github.com/andrewdwallo/transmatic/pull/26
+
+**Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.1.0...v1.1.1
+
 ## v1.1.0 - 2024-03-22
 
 ### What's Changed
