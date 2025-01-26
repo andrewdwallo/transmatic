@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Wallo\Transmatic\Commands\CleanTranslationsCommand;
 use Wallo\Transmatic\Commands\ProcessMissingTranslationsCommand;
 use Wallo\Transmatic\Contracts\TranslationHandler;
 use Wallo\Transmatic\Contracts\Translator;
@@ -21,7 +22,10 @@ class TransmaticServiceProvider extends PackageServiceProvider
         $package
             ->name('transmatic')
             ->hasConfigFile()
-            ->hasCommand(ProcessMissingTranslationsCommand::class)
+            ->hasCommands([
+                CleanTranslationsCommand::class,
+                ProcessMissingTranslationsCommand::class,
+            ])
             ->hasInstallCommand(static function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
@@ -47,7 +51,7 @@ class TransmaticServiceProvider extends PackageServiceProvider
             $storageType = config('transmatic.storage', 'file');
 
             if (array_key_exists($storageType, $storageMap)) {
-                return new $storageMap[$storageType]();
+                return new $storageMap[$storageType];
             }
 
             throw new InvalidArgumentException("Invalid translation storage type: {$storageType}");
@@ -60,7 +64,7 @@ class TransmaticServiceProvider extends PackageServiceProvider
                 throw new InvalidArgumentException("Invalid translator class: {$translator}");
             }
 
-            $instance = new $translator();
+            $instance = new $translator;
 
             if (! $instance instanceof Translator) {
                 throw new InvalidArgumentException("The class {$translator} must implement Wallo\Transmatic\Contracts\Translator");
