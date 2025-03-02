@@ -19,16 +19,16 @@ jobs:
         include:
           - laravel: 10.*
             testbench: 8.*
-            carbon: ^2.63
+            carbon: 2.*
           - laravel: 11.*
             testbench: 9.*
-            carbon: ^2.71
+            carbon: 2.*
             php: 8.2
             os: ubuntu-latest
             stability: prefer-stable
           - laravel: 12.*
             testbench: 10.*
-            carbon: ^2.71
+            carbon: 3.*
             php: 8.2
             os: ubuntu-latest
             stability: prefer-stable
