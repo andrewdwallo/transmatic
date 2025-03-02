@@ -2,6 +2,15 @@
 
 All notable changes to `transmatic` will be documented in this file.
 
+## v1.2.0 - 2025-03-02
+
+### What's Changed
+
+* build(deps): bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/andrewdwallo/transmatic/pull/27
+* support laravel 12 by @andrewdwallo in https://github.com/andrewdwallo/transmatic/pull/28
+
+**Full Changelog**: https://github.com/andrewdwallo/transmatic/compare/v1.1.1...v1.2.0
+
 ## v1.1.1 - 2025-01-26
 
 ### What's Changed
